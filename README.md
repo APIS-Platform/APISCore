@@ -140,6 +140,33 @@ See APIS Core running
     20:45:29.421 INFO  [Initializer.java:49]	  Running apis-mainnet.json, core version: ...
     ...
 
+Updating APIS Core
+-----------
+1. Stop apis core in docker container by hitting `CTRL + C`.
+2. Stop docker container by typing `exit`.
+
+        root@abcdef012345:/# exit
+        exit
+
+        username@ubuntu:~$
+
+3. Remove old container (Keystore and block data **will not be deleted** but we recommend backing up files)
+
+        $ sudo docker rm apisj
+
+4. Pull updated docker image from docker hub and restart your container.
+
+        $ sudo docker pull apisplatform/apisj
+        $ sudo docker run --net=host -it --name apisj -v ~/apisData:/apis/apisData apisplatform/apisj /bin/bash
+        ...
+        root@abcdef012345:/#
+
+5. Restart apis-core
+
+        root@abcdef012345:/# sh apis-core
+
+
+
 Credits
 -------
 
