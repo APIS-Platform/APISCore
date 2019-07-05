@@ -7,6 +7,30 @@ Docker image to run APIS Core node in a container.
 
 Supports APIS Masternode & Mining & RPC
 
+[한국어판](https://gist.github.com/Oxchild/c146887ed71ab5a3eda3197cfdb72af5)
+
+Index
+------------
+[1. Recommended System Requirements](#recommended-system-requirements)
+
+[2. Recommended VPS Products](#recommended-vps-products)
+
+[3. Setting Up With Docker Image](#setting-up-with-docker-image)
+
+[4. Setting Up With Preloaded Docker Image](#setting-up-with-preloaded-docker-image)
+
+[5. Setting Up With Preloaded APIS AMI](#setting-up-with-preloaded-apis-ami)
+
+[6. Starting APIS Core](#starting-apis-core)
+
+[7. Updating APIS Core](#updating-apis-core)
+
+[8. Updating APIS Core to Preloaded APIS Core](#updating-apis-core-to-preloaded-apis-core)
+
+[9. Removing APIS Core](#removing-apis-core)
+
+[10. Credits](#credits)
+
 
 Recommended System Requirements
 ------------
@@ -14,9 +38,9 @@ Recommended System Requirements
 * PC, cloud platform instance, or VPS with Ubuntu OS and Docker installed.
 * Stable network with average speed of 400kbps
 * Running Ubuntu 16.04 LTS or later
-* Processor performance equivant to 1.5 vCore(Vultur)
+* Processor performance equivant to 1 vCPU (AWS)
 * At least 2 GB of RAM
-* At least 20 GB of storage to store the block chain files
+* At least 25 GB of storage to store the block chain files
 
 Recommended VPS Products
 ------------
@@ -26,9 +50,9 @@ VPS Provider Name | Service Name | System Spec
 Amazon Web Services (AWS) | t2.small (EC2) | 1 CPU / 2GB RAM
 Microsoft Azure | D1 (Linux VM) | 1 Core / 3.5GB RAM / 50GB Storage
 Google Cloud Platform | n1-standard-1 (Compute Engine) | 1 vCPU / 3.75GB RAM
-Vultur | VC2 | 1 vCPU / 2048MB RAM
+Vultr | VC2 | 1 vCPU / 2048MB RAM
 
-Pulling Docker Image
+Setting Up With Docker Image
 -----------------------
 
 Anyone can pull APIS Core docker image for Ubuntu 16.04 LTS machines with this command :
@@ -36,104 +60,236 @@ Anyone can pull APIS Core docker image for Ubuntu 16.04 LTS machines with this c
     $ sudo docker pull apisplatform/apisj
     ...
     Status: Downloaded newer image for apisplatform/apisj:latest
-After this step, you can create your own APIS Core docker container with downloaded image.
-
-Setting Up Docker Data Volume & Starting Docker Container
------------------------
-
-You must set up docker data volume for apis wallet to keep your keystore & block data safely.<br />With following command, you can set your local data volume for keystore backup and start your container.
 
     $ cd ~
     $ mkdir apisData
     $ sudo docker run --net=host -it --name apisj -v ~/apisData:/apis/apisData apisplatform/apisj /bin/bash
     ...
     root@abcdef012345:/#
-Now, you can access into APIS Core docker container with your bash shell.
+After this step, you can manage your own APIS Core docker container with downloaded image.
 
-Setting Up APIS Core
+You can also see ~/apisData directory which includes blockchain data and your keystore data.
+
+
+Setting Up With Preloaded Docker Image
+-----------------------
+
+For everyone who needs fast sync, we made option to get pre-synced version.
+
+Anyone can pull Pre-Synced APIS Core docker image for Ubuntu 16.04 LTS machines with this command :
+
+    $ sudo docker pull apisplatform/apisj:preloaded
+    ...
+    Status: Downloaded newer image for apisplatform/apisj:preloaded
+
+    $ cd ~
+    $ mkdir apisData
+    $ sudo docker run --net=host -it --name apisj -v ~/apisData:/apis/apisData apisplatform/apisj:preloaded /bin/bash
+    ...
+    root@abcdef012345:/#
+After this step, you can manage your own Pre-Synced APIS Core docker container with downloaded image.
+
+Setting Up With Preloaded APIS AMI
+-----------------------
+
+We provide Preloaded APIS AMI(Amazon Machine Image)
+
+Anyone can use APIS Preloaded AMI from Amazon Marketplace. Just create Amazon EC2 instance and use APIS Preloaded AMI.
+
+On AWS instance with APIS Preloaded AMI, just use following command :
+
+    $ sudo docker restart apisj
+    $ sudo docker attach apisj
+    ...
+    root@abcdef012345:/#
+After this step, you can manage your own Pre-Synced APIS Core docker container with downloaded image.
+
+Starting APIS Core
 -----------
 
 1. Run `apis-core` script with `sh` command
 
         root@abcdef012345:/# sh ./apis-core
 
-2. Set mining config (We recommend to load private key from PC wallet)
+2. APIS Core setup panel will be shown
+
+        APIS Core Settings ==========
+        v0.8.820
+
+        [0]  Network             : Mainnet
+        [1]  Max Peers           : 30
+
+        [2]  Miner               : -
+
+        [3]  masternode          : -
+        [4]  Reward Recipient    : -
+
+        [5]  RPC(WS) Enabled     : false
+        [6]  RPC(WS) Port        : 44445
+        [7]  RPC(WS) Max Connections: 1
+        [8]  RPC(HTTP) Enabled   : false
+        [9]  RPC(HTTP) Port      : 44446
+        [A]  RPC(HTTP) nThreads  : 8
+        [B]  RPC ID              : d4d761908d76981d5a4a8a7b8b5902a3
+        [C]  RPC Password        : ec176fe186bee83944a9d848c4855d31
+        [D]  RPC Allowed IP      : 127.0.0.1
+
+        [E]  Update APIS Core    : 0.8.820 => 0.8.810
+
+        Input other key to start APIS Core
+        Or if no key is entered, APIS Core will start automatically after 10 seconds.
+        >> 
+
+
+3. [Optional] Setting up PoS mining config (Press '2')
 
         You can get rewards through APIS Block mining.
         You should input Private key of a miner to start mining.
         The chance of getting reward goes higher with the registered miner's balance.
         --
-        No Private key is found.
+        Miner :  Not set
         --
-        1. Generate a new Private key
-        2. Input your Private key
-        3. Exit
-        >> 2
 
-        Please input your Private key.
+        --
+        [1]  Select miner from locked private key file
+        [2]  Deactivate mining (Clear miner setting)
+        [3]  Done                
+        >> 
+
+4. Loading miner wallet (Importing private key from PC wallet is recommended)
+
+        Which address would you like to mining?
+
+        [A]  Generate a new private key
+        [B]  Import private key  
+        [C]  Cancel              
+
+        >> B
+        Please input your Private key(Hex).
         >> d4e68558977bc0aaaaeced983c574bffd0e2d98123a7a687adbba58c8fbfffff
 
-        Please input your password : 
-        Please confirm your password : 
-        Please input alias : testMiner
+5. Select miner wallet
 
-3. Load locked private key and unlock it to run mining
+        Which address would you like to mining?
 
-        1. Generate a new Private key
-        2. Import your Private key
-        3. Select coinbase from locked Private key file
-        4. Deactivate mining function
-        5. Exit
-        >> 3
-        Which address would you like to mining and enable mining?
-        [1] ff275aa2cc4661ec61145089331b3666d781a348
+        [A]  Generate a new private key
+        [B]  Import private key  
+        [C]  Cancel              
+
+        [1]  9f47869b3a469c27d8b3069c9a9fb2deb294580d (0 APIS)
         >> 1
-        Please enter the password of [ff275aa2cc4661ec61145089331b3666d781a348]
-        >>
-        Mining is enabled and saved to settings.
-      After this step, you will be automatically switched to masternode setup.
+        Please enter the password of [9f47869b3a469c27d8b3069c9a9fb2deb294580d]
+        >> 
 
+        ...
 
-4. Set masternode config (We recommend to load private key from PC wallet with enough balance and mineral)
+        You can get rewards through APIS Block mining.
+        You should input Private key of a miner to start mining.
+        The chance of getting reward goes higher with the registered miner's balance.
+        --
+        Miner :  9f47869b3a469c27d8b3069c9a9fb2deb294580d (0 APIS)
+        --
 
-        You should input Private key of a masternode.
+        --
+        [1]  Select miner from locked private key file
+        [2]  Deactivate mining (Clear miner setting)
+        [3]  Done                
+        >> 
+
+6. [Optional] Setting up Masternode wallet (Press '3')
+
+        APIS Core Settings ==========
+        v0.8.820
+
+        [0]  Network             : Mainnet
+        [1]  Max Peers           : 30
+
+        [2]  Miner               : 9f47869b3a469c27d8b3069c9a9fb2deb294580d (0 APIS)
+
+        [3]  masternode          : -
+        [4]  Reward Recipient    : -
+
+        [5]  RPC(WS) Enabled     : false
+        [6]  RPC(WS) Port        : 44445
+        [7]  RPC(WS) Max Connections: 1
+        [8]  RPC(HTTP) Enabled   : false
+        [9]  RPC(HTTP) Port      : 44446
+        [A]  RPC(HTTP) nThreads  : 8
+        [B]  RPC ID              : d4d761908d76981d5a4a8a7b8b5902a3
+        [C]  RPC Password        : ec176fe186bee83944a9d848c4855d31
+        [D]  RPC Allowed IP      : 127.0.0.1
+
+        [E]  Update APIS Core    : 0.8.820 => 0.8.810
+
+        Input other key to start APIS Core
+
+        >> 3
+
+7. Loading & Selecting Masternode wallet
+
+        Which address would you like to masternode?
+
+        [A]  Generate a new private key
+        [B]  Import private key  
+        [C]  Cancel              
+
+        [1]  9f47869b3a469c27d8b3069c9a9fb2deb294580d (0 APIS)
+        >> 1
+        Please enter the password of [9f47869b3a469c27d8b3069c9a9fb2deb294580d]
+        >> 
+
+        ...
+
+        You should input Private key of a masternode to staking.
         The balance of the Masternode must be exactly 50,000, 200,000, and 500,000 APIS.
         --
-        1. Generate a new Private key
-        2. Import your Private key
-        3. Select Masternode from locked Private key and enable masternode
-        4. Deactivate Masternode function
-        5. Exit
-        >>
-      Setting masternode will be as same as we described before.<br>Be sure to register appropriate wallet! Or masternode will not start!
+        Masternode :  9f47869b3a469c27d8b3069c9a9fb2deb294580d (0 APIS)
+        --
 
-        Please enter the address to receive the Masternode's reward instead.
-        >> AAAAA....12345
-      And you should enter reward wallet in this step.
+        [1]  Select masternode from locked private key file
+        [2]  Deactivate masternode (Clear masternode & recipient setting)
+        [3]  Done                
+        >> 
 
-5. Set RPC options if you want.
+8. Selecting Masternode receipent
 
-        The current setting is as follows.
+        You should input address of a recipient to receive the Masternode's reward        instead.
+        --
+        Recipient :  Not set
+        --
 
-        use_rpc             : null
-        port                : null
-        id                  : null
-        password            : null
-        max_connections     : null
-        allow_ip            : null
+        [1]  Select recipient from locked private key file
+        [2]  Deactivate masternode (Clear masternode & recipient setting)
+        [3]  Done                
+        >> 
 
-        Do you want to change the settings?
-        0. Disable RPC server
-        1. Enable RPC server with this setting
-        2. Change port
-        3. Change id
-        4. Change password
-        5. Change max_connections
-        6. Change allow_ip
-        7. Exit
-        >>
+        ...
 
-See APIS Core running
+        You should input address of a recipient to receive the Masternode's reward instead.
+        --
+        Recipient :  9f47869b3a469c27d8b3069c9a9fb2deb294580d (0 APIS)
+        --
+
+        [1]  Select recipient from locked private key file
+        [2]  Deactivate masternode (Clear masternode & recipient setting)
+        [3]  Done                
+        >> 
+
+9. Set RPC config and Update if needed
+
+        [5]  RPC(WS) Enabled     : false
+        [6]  RPC(WS) Port        : 44445
+        [7]  RPC(WS) Max Connections: 1
+        [8]  RPC(HTTP) Enabled   : false
+        [9]  RPC(HTTP) Port      : 44446
+        [A]  RPC(HTTP) nThreads  : 8
+        [B]  RPC ID              : d4d761908d76981d5a4a8a7b8b5902a3
+        [C]  RPC Password        : ec176fe186bee83944a9d848c4855d31
+        [D]  RPC Allowed IP      : 127.0.0.1
+
+        [E]  Update APIS Core    : 0.8.820 => 0.8.810
+
+Press other keys to start APIS Core
 -------------
 
     20:45:27.428 INFO  [ApisFactory.java:62]	  Starting APIS...
@@ -165,9 +321,54 @@ Updating APIS Core
 
         root@abcdef012345:/# sh apis-core
 
+Updating APIS Core to Preloaded APIS Core
+-----------
+1. Stop apis core in docker container by hitting `CTRL + C`.
+2. Stop docker container by typing `exit`.
+
+        root@abcdef012345:/# exit
+        exit
+
+        username@ubuntu:~$
+
+3. Remove old container (Keystore and block data **will not be deleted** but we recommend backing up files)
+
+        $ sudo docker rm apisj
+
+4. Pull updated docker image from docker hub and restart your container.
+
+        $ sudo docker pull apisplatform/apisj:preloaded
+        $ sudo docker run --net=host -it --name apisj -v ~/apisData:/apis/apisData apisplatform/apisj:preloaded /bin/bash
+        ...
+        root@abcdef012345:/#
+
+5. Restart apis-core
+
+        root@abcdef012345:/# sh apis-core
+
+
+Removing APIS Core
+-----------
+1. Stop apis core in docker container by hitting `CTRL + C`.
+2. Stop docker container by typing `exit`.
+
+        root@abcdef012345:/# exit
+        exit
+
+        username@ubuntu:~$
+
+3. Remove old container (Keystore and block data **will not be deleted** but we recommend backing up files)
+
+        $ sudo docker rm apisj
+
+4. Remove `apisData` directory
+
+        $ sudo docker rm apisj
 
 
 Credits
 -------
 
-APIS Team
+APIS Development Team & The Oxchild Pte.Ltd.
+
+Document written by Ryan.
