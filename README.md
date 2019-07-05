@@ -134,8 +134,7 @@ Starting APIS Core
         [C]  RPC Password        : ec176fe186bee83944a9d848c4855d31
         [D]  RPC Allowed IP      : 127.0.0.1
 
-        [E]  Update APIS Core    : 0.8.820 => 0.8.810
-
+		
         Input other key to start APIS Core
         Or if no key is entered, APIS Core will start automatically after 10 seconds.
         >> 
@@ -219,7 +218,6 @@ Starting APIS Core
         [C]  RPC Password        : ec176fe186bee83944a9d848c4855d31
         [D]  RPC Allowed IP      : 127.0.0.1
 
-        [E]  Update APIS Core    : 0.8.820 => 0.8.810
 
         Input other key to start APIS Core
 
@@ -287,7 +285,6 @@ Starting APIS Core
         [C]  RPC Password        : ec176fe186bee83944a9d848c4855d31
         [D]  RPC Allowed IP      : 127.0.0.1
 
-        [E]  Update APIS Core    : 0.8.820 => 0.8.810
 
 Press other keys to start APIS Core
 -------------
